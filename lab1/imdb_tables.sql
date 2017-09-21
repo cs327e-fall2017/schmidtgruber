@@ -59,6 +59,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS imdb.title_basics (
   `title_id` string,
   `title_type` string,
   `primary_title` string,
+  `original_title` string,
   `is_adult` boolean,
   `start_year` int,
   `end_year` int,
