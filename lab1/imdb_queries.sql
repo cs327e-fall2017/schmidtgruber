@@ -44,10 +44,36 @@ where tb.title_type = 'tvSeries'
 and pb.primary_name = 'Vin Diesel'
 order by tb.primary_title;
 
-/*Query 7: Find all tv shows that have a 9th season sorted alphabetically*/
+/* Query 7: Find all writers that are also directors, sorted in alphabetical order*/
+select distinct pb.primary_name
+from person_basics pb join writers w on pb.person_id = w.person_id
+join directors d on w.person_id = d.person_id
+where pb.birth_year > 1987
+order by pb.primary_name;
 
+/* Query 8: Find all movies that have an average rating of 7.0 and higher and have more than 1000 votes sorted by number of votes*/
+select tb.primary_title, tr.average_rating, tr.num_votes
+from title_basics tb join title_ratings tr on tr.title_id = tb.title_id
+where tr.average_rating >= 7.0
+and tr.num_votes >= 1000
+order by tr.num_votes desc;
 
+/* Query 9: Find all composers who have a movie with a rating of 9.0 or higher and sort by age youngest to oldest*/
+select pb.primary_name, pb.birth_year, tr.average_rating
+from person_basics pb join person_professions pp on pb.person_id = pp.person_id
+join stars s on pp.person_id = s.person_id
+join title_ratings tr on tr.title_id = s.title_id
+where pp.profession = 'composer'
+and tr.average_rating >= 9.0
+order by pb.birth_year desc;
 
+/* Query 10: Find all comedy movies and sort by rating from highest to lowest*/
+select tb.primary_title, tb.start_year, tr.average_rating
+from title_genres tg join title_basics tb on tb.title_id = tg.title_id
+join title_ratings tr on tr.title_id = tb.title_id
+where tb.title_type = 'movie'
+and tg.genre = 'Comedy'
+order by tr.average_rating desc;
 
 
 
