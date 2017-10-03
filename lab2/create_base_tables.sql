@@ -44,3 +44,51 @@ CREATE TABLE stars
 	REFERENCES title_basics
 		ON UPDATE CASCADE
 		ON DELETE CASCADE);
+
+CREATE TABLE directors
+	(title_id char (9),
+	person_id char (9),
+	PRIMARY KEY (title_id, person_id)
+	FOREIGN KEY directors2title_basics (title_id)
+	REFERENCES title_basics
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+	FOREIGN KEY directors2person_basics (person_id)
+	REFERENCES person_basics
+		ON UPDATE CASCADE
+		ON DELETE CASCADE);
+
+CREATE TABLE person_professions
+	(person_id char (9),
+	profession varchar (30),
+	PRIMARY KEY (person_id, profession)
+	FOREIGN KEY person_professions2person_basics (person_id)
+	REFERENCES person_basics
+		ON UPDATE CASCADE
+		ON DELETE CASCADE);
+
+CREATE TABLE title_episodes
+	(title_id char (9) PRIMARY KEY,
+	parent_title char (9),
+	season_num int,
+	episode_num int,
+	FOREIGN KEY title_episode2title_basics (title_id)
+	REFERENCES title_basics
+		ON UPDATE CASCADE
+		ON DELETE CASCADE);
+
+CREATE TABLE title_genres
+	(title_id char (9),
+	genre varchar (20),
+	PRIMARY KEY (title_id, genre));
+
+CREATE TABLE writers
+	(title_id char (9),
+	person_id varchar (20),
+	PRIMARY KEY (title_id, person_id)
+	FOREIGN KEY writers2title_basics (title_id)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+	FOREIGN KEY writers2person_basics (person_id)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE);
