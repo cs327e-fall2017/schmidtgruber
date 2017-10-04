@@ -18,6 +18,7 @@ CREATE TABLE title_ratings
 	(title_id char (9) PRIMARY KEY,
 	average_rating numeric(3,1),
 	num_votes int
+	-- ERROR:  syntax error at or near "FOREIGN"
 	FOREIGN KEY title_ratings2title_basics (title_id)
 	REFERENCES title_basics
 		ON UPDATE CASCADE
@@ -26,6 +27,7 @@ CREATE TABLE title_ratings
 CREATE TABLE principals
 	(title_id char (9),
 	person_id char (9)
+	-- ERROR:  syntax error at or near "("
 	PRIMARY KEY (title_id, person_id)
 	FOREIGN KEY principals2title_basics (title_id)
 	REFERENCES title_basics
@@ -35,6 +37,7 @@ CREATE TABLE principals
 CREATE TABLE stars
 	(person_id char (9),
 	title_id char (9)
+	-- ERROR:  syntax error at or near "("
 	PRIMARY KEY (person_id, title_id)
 	FOREIGN KEY stars2person_basics (person_id)
 	REFERENCES person_basics
@@ -49,6 +52,7 @@ CREATE TABLE directors
 	(title_id char (9),
 	person_id char (9),
 	PRIMARY KEY (title_id, person_id)
+	-- ERROR:  syntax error at or near "FOREIGN"
 	FOREIGN KEY directors2title_basics (title_id)
 	REFERENCES title_basics
 		ON UPDATE CASCADE
@@ -62,6 +66,7 @@ CREATE TABLE person_professions
 	(person_id char (9),
 	profession varchar (30),
 	PRIMARY KEY (person_id, profession)
+	-- ERROR:  syntax error at or near "FOREIGN"
 	FOREIGN KEY person_professions2person_basics (person_id)
 	REFERENCES person_basics
 		ON UPDATE CASCADE
@@ -72,6 +77,7 @@ CREATE TABLE title_episodes
 	parent_title char (9),
 	season_num int,
 	episode_num int,
+	-- ERROR:  syntax error at or near "title_episode2title_basics"
 	FOREIGN KEY title_episode2title_basics (title_id)
 	REFERENCES title_basics
 		ON UPDATE CASCADE
@@ -86,6 +92,7 @@ CREATE TABLE writers
 	(title_id char (9),
 	person_id varchar (20),
 	PRIMARY KEY (title_id, person_id)
+	-- ERROR:  syntax error at or near "FOREIGN"
 	FOREIGN KEY writers2title_basics (title_id)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE
