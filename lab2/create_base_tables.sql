@@ -55,7 +55,7 @@ create table person_professions(
 
 create table title_episodes(
 	title_id varchar(10) primary key,
-	parent_title varchar(10),
+	parent_title_id varchar(10),
 	season_num int,
 	episode_num int,
 	foreign key(title_id) references title_basics
