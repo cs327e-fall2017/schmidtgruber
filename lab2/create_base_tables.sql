@@ -1,8 +1,8 @@
 create table title_basics(
 	title_id varchar(10) primary key,
 	title_type varchar(20),
-	primary_title varchar(300),
-	original_title varchar(300),
+	primary_title varchar(400),
+	original_title varchar(400),
 	is_adult boolean,
 	start_year int,
 	end_year int,
