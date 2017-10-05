@@ -28,6 +28,7 @@ create table principals(
 	person_id varchar(10),
 	primary key(title_id, person_id),
 	foreign key(title_id) references title_basics
+	foreign key(person_id) references person_basics
 );
 
 create table stars(
@@ -65,6 +66,7 @@ create table title_genres(
 	title_id varchar(10),
 	genre varchar(20),
 	primary key(title_id, genre)
+	foreign key(title_id) references title_basics
 );
 
 create table writers(
