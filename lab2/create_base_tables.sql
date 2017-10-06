@@ -26,17 +26,13 @@ create table title_ratings(
 create table principals(
 	title_id varchar(10),
 	person_id varchar(10),
-	primary key(title_id, person_id),
-	foreign key(title_id) references title_basics,
-	foreign key(person_id) references person_basics
+	primary key(title_id, person_id)
 );
 
 create table stars(
 	person_id varchar(10),
 	title_id varchar(10),
-	primary key(person_id, title_id),
-	foreign key(person_id) references person_basics,
-	foreign key(title_id) references title_basics
+	primary key(person_id, title_id)
 );
 
 create table directors(
@@ -72,7 +68,5 @@ create table title_genres(
 create table writers(
 	title_id varchar(10),
 	person_id varchar(20),
-	primary key(title_id, person_id),
-	foreign key(title_id) references title_basics,
-	foreign key(person_id) references person_basics
+	primary key(title_id, person_id)
 );
