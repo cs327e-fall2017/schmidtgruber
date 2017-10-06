@@ -1,0 +1,12 @@
+Entities:
+	- fact_title
+		* stores information about titles' names and times of creation
+	- dim_rating_type
+		* stores information about titles' average ratings and rating types
+	- dim_title_type
+		* stores information about titles' type of title (movie, short, tvseries, etc.)
+	- dim_type_genre
+		* stores information about titles' genre
+
+Important Attributes:
+	- rating_type stores one of the following values depending on the title's rank: appalling, average, outstanding.
