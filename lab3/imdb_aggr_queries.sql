@@ -1,5 +1,5 @@
 /* 2 inner joins, 1 where clause, 1 having clause
-/* Query 1: Actors who have acted in at least 1 titles per year between the years 1995 - 2000 */
+/* Query 1: Actors who have acted in at least 1 title per year between the years 1995 - 2000 */
 select primary_name as star_name, start_year as year, count(*) as title_count
 from title_basics tb join stars s on tb.title_id = s.title_id
 join person_basics pb on pb.person_id = s.person_id
@@ -40,8 +40,16 @@ group by title_name, episodes
 having count(*) >= 100
 order by episodes, count(*);
 
+/* Query 5: Principals who have been in atleast 5 titles */
+select primary_name as principal_name, count(person_id) as num_of_titles 
+from principals p join person_basics pb on p.person_id = pb.person_id
+group by primary_name
+having count(person_id) >= 5
+order by count(*);
+
 /*  Inner Join Count: DONE
 	Outer Join Count: 0/2
 	Where Clause Count: DONE
 	Having Clause Count: DONE
-	Bast tables still needing to be accessed: principals, person_professions, title_episodes, 
+	Base tables still needing to be accessed: principals, person_professions, 
+*/
