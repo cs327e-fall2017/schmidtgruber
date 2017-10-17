@@ -28,7 +28,7 @@ select birth_year from person_basics limit(5);
 select death_year from person_basics limit(5);
 
 select title_id from title_ratings limit(5);
-select average_ratings from title_ratings limit(5);
+select average_rating from title_ratings limit(5);
 select num_votes from title_ratings limit(5);
 
 select title_id from principals limit(5);
