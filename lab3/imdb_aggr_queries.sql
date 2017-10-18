@@ -31,15 +31,12 @@ group by primary_name, average_rating
 order by primary_name, average_rating, count(*);
 
 /* 2 inner joins, 1 where clause, 1 having clause
-/* Query 4: TV Shows that have at least 100 episodes and a rating of 5 or higher */
-select primary_title as title_name, parent_title_id as parent, average_rating as rating, start_year as year, count(*) as episode_count
-from title_basics tb join title_episodes te on tb.title_id = te.title_id
-join title_ratings tr on tb.title_id = tr.title_id
-where title_type = 'tvEpisode'
-and average_rating >= 5.0
-group by parent_title_id, average_rating, start_year
+/* Query 4: TV Shows that have at least 100 episodes */
+select primary_title as title, count(*) as episode_count
+from title_episodes te join title_basics tb on te.parent_title_id = tb.title_id
+group by primary_title
 having count(*) >= 100
-order by primary_title, count(*);
+order by count(*) desc, primary_title;
 
 /* Query 5: Principals who have been in atleast 5 titles */
 select primary_name as principal_name, count(person_id) as num_of_titles 
