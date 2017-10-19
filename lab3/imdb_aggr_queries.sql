@@ -34,12 +34,12 @@ group by primary_title
 having count(*) >= 100
 order by count(*) desc, primary_title;
 
-/* Query 5: Titles that have no episode */
-select primary_title as title, count(*) as no_episodes
-from title_basics tb left outer join title_episodes te on tb.title_id = te.title_id
-where te.episode_num is null
-group by primary_title
-order by primary_title;
+/* Query 5: How many times persons are not writers in a title  */
+select primary_name as name, count(*) as not_a_writer
+from person_basics pb left outer join writers w on w.person_id = pb.person_id
+where w.title_id is null
+group by primary_name
+order by count(*);
 
  /* Query 6: Actors who are in at least 25 titles that they arent a principal actor in */
 select primary_name as name, count(*) as not_principal
