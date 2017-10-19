@@ -34,12 +34,14 @@ group by primary_title
 having count(*) >= 100
 order by count(*) desc, primary_title;
 
-/* Query 5: How many times persons are not writers in a title  */
-select primary_name as name, count(*) as not_a_writer
-from person_basics pb left outer join writers w on w.person_id = pb.person_id
-where w.title_id is null
+/* Query 5: Writers who are not directors, and how many titles they have starred in before */
+select primary_name as name, count(*) as num_titles
+from writers w left outer join directors d on w.person_id = d.person_id
+join person_basics pb on pb.person_id = w.person_id
+join stars s on w.person_id = s.person_id
+where d.title_id is null
 group by primary_name
-order by count(*);
+order by count(*) desc;
 
  /* Query 6: Actors who are in at least 25 titles that they arent a principal actor in */
 select primary_name as name, count(*) as not_principal
