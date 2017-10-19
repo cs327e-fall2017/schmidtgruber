@@ -35,12 +35,10 @@ having count(*) >= 100
 order by count(*) desc, primary_title;
 
 /* Query 5: How many persons that were born in 1995 that aren't stars for atleast 5 titles */
-select primary_name as name, count(*) as not_star
-from person_basics pb left outer join stars s on pb.person_id = s.person_id
-where birth_year = 1995
-and s.title_id is null
-group by primary_name
-having count(*) >= 5
+select primary_title as title, count(*) as no_episodes
+from title_basics tb left outer join title_episodes te on tb.title_id = te.title_id
+where te.episode_num is null
+group by primary_title
 order by count(*) desc;
 
  /* Query 6: Actors who are in at least 25 titles that they arent a principal actor in */
