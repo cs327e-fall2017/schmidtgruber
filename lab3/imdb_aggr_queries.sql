@@ -45,6 +45,15 @@ group by primary_name
 having count(person_id) >= 5
 order by count(*);
 
+ /* Query 6: How many times an actor is in a title and isnt a principal actor */
+select primary_name as name, count(*) as not_principal
+from person_professions pp left outer join principals p on pp.person_id = p.person_id
+join person_basics pb on pb.person_id = pp.person_id
+where profession = 'actor'
+and p.title_id is null
+group by primary_name
+order by count(*) desc;
+
 /*  Inner Join Count: DONE
 	Outer Join Count: 0/2
 	Where Clause Count: DONE
