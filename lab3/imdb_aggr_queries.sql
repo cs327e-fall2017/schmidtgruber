@@ -43,12 +43,12 @@ where d.title_id is null
 group by primary_name
 order by count(*) desc;
 
- /* Query 6: Actors who are in at least 25 titles that they arent a principal actor in */
+ /* Query 6: Actors who are in at least 35 titles that they arent a principal actor in */
 select primary_name as name, count(*) as not_principal
 from person_professions pp left outer join principals p on pp.person_id = p.person_id
 join person_basics pb on pb.person_id = pp.person_id
 where profession = 'actor'
 and p.title_id is null
 group by primary_name
-having count(*) > 25
+having count(*) > 35
 order by count(*) desc;

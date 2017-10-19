@@ -50,5 +50,5 @@ join person_basics pb on pb.person_id = pp.person_id
 where profession = 'actor'
 and p.title_id is null
 group by primary_name
-having count(*) > 25
+having count(*) > 35
 order by count(*) desc;
