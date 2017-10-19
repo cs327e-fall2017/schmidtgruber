@@ -38,12 +38,14 @@ group by primary_title
 having count(*) >= 100
 order by count(*) desc, primary_title;
 
-/* Query 5: Principals who have been in atleast 5 titles */
-select primary_name as principal_name, count(person_id) as num_of_titles 
-from principals p join person_basics pb on p.person_id = pb.person_id
+/* Query 5: How many persons that were born in 1995 that aren't stars for atleast 5 titles */
+select primary_name as name, count(*) as not_star
+from person_basics pb left outer join stars s on pb.person_id = s.person_id
+where birth_year = 1995
+and s.title_id is null
 group by primary_name
-having count(person_id) >= 5
-order by count(*);
+having count(*) >= 5
+order by count(*) desc;
 
  /* Query 6: Actors who are in at least 50 titles that they arent a principal actor in */
 select primary_name as name, count(*) as not_principal
