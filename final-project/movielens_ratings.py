@@ -114,7 +114,8 @@ links_lines = sc.textFile(links_file)
 rdd_links = links_lines.map(parse_links_line)  # movie_id, imdb_id
 # print_rdd(rdd_links, "rdd_links")
 
-#####
+##### defines 'rdd_joined' as a result of a join operation on 'rdd_avgs'.
+##### the join operation returns a dataset of pairs of elements between 'rdd_avgs' and 'rdd_links' for each key.
 rdd_joined = rdd_avgs.join(rdd_links)
 
 
@@ -144,7 +145,8 @@ def add_imdb_id_prefix(tupl):
 
 
 # add imdb_id prefix ()
-#####
+##### defines 'rdd_ratings_by_imdb' as the result of a map transformation on 'rdd_joined'.
+##### the map transormation returns a new distributed dataset formed by passing each element of 'rdd_joined' through the function 'add_imdb_id_prefix'.
 rdd_ratings_by_imdb = rdd_joined.map(add_imdb_id_prefix)
 
 
@@ -170,7 +172,7 @@ def save_rating_to_db(list_of_tuples):
             print
             "Error in save_rating_to_db: ", e.message
 
-#####
+##### Applies the function 'save_rating_to_db' to each partition of the rdd 'rdd_ratings_by_imdb'
 rdd_ratings_by_imdb.foreachPartition(save_rating_to_db)
 
 # free up resources
