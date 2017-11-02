@@ -1,1 +1,5 @@
 select count(movielens_rating) from title_ratings;
+ count 
+-------
+ 26687
+(1 row)
