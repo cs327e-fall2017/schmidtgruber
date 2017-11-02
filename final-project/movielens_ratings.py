@@ -42,7 +42,7 @@ def init():
 
 def print_rdd(rdd, logfile):
     f = open(log_path + logfile, "w")
-    #####
+    #This collects our results so that we can print them
     results = rdd.collect()
     counter = 0
     for result in results:
@@ -64,11 +64,11 @@ def parse_line(line):
 
 init()
 lines = sc.textFile(ratings_file)
-#####
+#This returns an rdd using the function given
 rdd = lines.map(parse_line)  # movie_id, rating
 # print_rdd(rdd, "movie_rating_pairs")
 
-#####
+#This maps each of the values to a key/value pair
 rdd_pair = rdd.mapValues(lambda rating: (rating, 1))  # movie_id, (rating, 1)
 
 
@@ -81,7 +81,7 @@ def add_ratings_by_movie(rating1, rating2):
     rating_occurrences = rating1[1] + rating2[1]
     return (rating_sum_total, rating_occurrences)
 
-#####
+#This groups each key/pair value by the key
 rdd_totals = rdd_pair.reduceByKey(add_ratings_by_movie)  # movie_id (total rating, total occurrences)
 
 
@@ -93,7 +93,7 @@ def avg_ratings_by_movie(rating_total_occur):
     avg_rating = round((rating_total / rating_occur), 2)
     return avg_rating
 
-#####
+#This maps the movie_id and average rating to a key/value pair
 rdd_avgs = rdd_totals.mapValues(avg_ratings_by_movie)  # movie_id, average rating
 # print_rdd(rdd_avgs, "movie_rating_averages") # print rdd
 rdd_avgs.cache()
@@ -110,12 +110,11 @@ def parse_links_line(line):
 
 # lookup imdb id
 links_lines = sc.textFile(links_file)
-#####
+#returns an rdd using the function given
 rdd_links = links_lines.map(parse_links_line)  # movie_id, imdb_id
 # print_rdd(rdd_links, "rdd_links")
 
-##### defines 'rdd_joined' as a result of a join operation on 'rdd_avgs'.
-##### the join operation returns a dataset of pairs of elements between 'rdd_avgs' and 'rdd_links' for each key.
+##### defines 'rdd_joined' as a result of a join operation on 'rdd_avgs'. the join operation returns a dataset of pairs of elements between 'rdd_avgs' and 'rdd_links' for each key.
 rdd_joined = rdd_avgs.join(rdd_links)
 
 
@@ -145,8 +144,7 @@ def add_imdb_id_prefix(tupl):
 
 
 # add imdb_id prefix ()
-##### defines 'rdd_ratings_by_imdb' as the result of a map transformation on 'rdd_joined'.
-##### the map transormation returns a new distributed dataset formed by passing each element of 'rdd_joined' through the function 'add_imdb_id_prefix'.
+##### defines 'rdd_ratings_by_imdb' as the result of a map transformation on 'rdd_joined'. the map transormation returns a new distributed dataset formed by passing each element of 'rdd_joined' through the function 'add_imdb_id_prefix'.
 rdd_ratings_by_imdb = rdd_joined.map(add_imdb_id_prefix)
 
 
