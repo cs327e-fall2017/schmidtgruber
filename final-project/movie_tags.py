@@ -48,7 +48,11 @@ def print_rdd(rdd, logfile):
 
 
 def parse_line(line):
+
     # Add logic for parsing the line (step 3)
+    fields = line.split(",")
+    movie_id = int(fields[1])
+    tag = fields[2]
 
     return (movie_id, tag)
 
@@ -58,6 +62,7 @@ rdd_tags = lines.map(parse_line)  # movie_id, tag
 print_rdd(rdd_tags, "movie_tag_pairs")
 
 # Add logic for distinct (step 4)
+rdd_distinct_tags = rdd_tags.distinct()
 
 rdd_distinct_tags.cache()
 
@@ -77,6 +82,7 @@ rdd_links = links_lines.map(parse_links_line)  # movie_id, imdb_id
 # print_rdd(rdd_links, "rdd_links")
 
 # Add logic for joining rdd_links and rdd_distinct_tags (step 5)
+rdd_joined = rdd_links.join(rdd_distinct_tags).map()
 print_rdd(rdd_joined, "movielens_imdb_joined")
 
 
