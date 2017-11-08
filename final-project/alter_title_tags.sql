@@ -1,0 +1,1 @@
+alter table Title_Tags add foreign key(title_id) references Title_Basics(title_id);
