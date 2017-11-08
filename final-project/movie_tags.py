@@ -82,7 +82,7 @@ rdd_links = links_lines.map(parse_links_line)  # movie_id, imdb_id
 # print_rdd(rdd_links, "rdd_links")
 
 # Add logic for joining rdd_links and rdd_distinct_tags (step 5)
-rdd_joined = rdd_links.join(rdd_distinct_tags).map()
+rdd_joined = rdd_links.join(rdd_distinct_tags)
 print_rdd(rdd_joined, "movielens_imdb_joined")
 
 
@@ -117,15 +117,20 @@ print_rdd(formatted_rdd, "formatted_rdd")
 def save_to_db(list_of_tuples):
     conn = psycopg2.connect(database=rds_database, user=rds_user, password=rds_password, host=rds_host, port=rds_port)
     conn.autocommit = True
+    cur = conn.cursor()
 
     # Add logic to extract each element (step 7)
+    for tupl in list_of_tuples:
+        imdb_id_str, tag = tupl
+        insert_stmt = "insert into Title_Tags (title_id, tag) values (%s, %s)"
 
-    try:
-    # Add logic to perform insert statement (step 7)
+        try:
+            # Add logic to perform insert statement (step 7)
+            cur.execute(insert_stmt, (imdb_id_str, tag))
 
-    except Exception as e:
-        print
-        "Error in save_to_db: ", e.message
+        except Exception as e:
+            print
+            "Error in save_to_db: ", e.message
 
 
 formatted_rdd.foreachPartition(save_to_db)
