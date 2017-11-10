@@ -1,1 +1,6 @@
-select (*) from Title_Tags;
+select count(*) from Title_Tags;
+
+ count  
+--------
+ 200642
+(1 row)

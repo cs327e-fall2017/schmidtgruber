@@ -89,7 +89,7 @@ print_rdd(rdd_joined, "movielens_imdb_joined")
 def add_imdb_id_prefix(tupl):
     movielens_id, atupl = tupl
     tag, imdb_id = atupl
-    imdb_id_str = str(imdb_id)
+    imdb_id_str = imdb_id
 
     if len(imdb_id_str) == 1:
         imdb_id_str = "tt000000" + imdb_id_str
