@@ -59,7 +59,7 @@ def parse_line(line):
 
 lines = sc.textFile(tags_file)
 rdd_tags = lines.map(parse_line)  # movie_id, tag
-print_rdd(rdd_tags, "movie_tag_pairs")
+#print_rdd(rdd_tags, "movie_tag_pairs")
 
 # Add logic for distinct (step 4)
 rdd_distinct_tags = rdd_tags.distinct()
@@ -82,14 +82,14 @@ rdd_links = links_lines.map(parse_links_line)  # movie_id, imdb_id
 # print_rdd(rdd_links, "rdd_links")
 
 # Add logic for joining rdd_links and rdd_distinct_tags (step 5)
-rdd_joined = rdd_links.join(rdd_distinct_tags)
-print_rdd(rdd_joined, "movielens_imdb_joined")
+rdd_joined = rdd_distinct_tags.join(rdd_links)
+#print_rdd(rdd_joined, "movielens_imdb_joined")
 
 
 def add_imdb_id_prefix(tupl):
     movielens_id, atupl = tupl
     tag, imdb_id = atupl
-    imdb_id_str = imdb_id
+    imdb_id_str = str(imdb_id)
 
     if len(imdb_id_str) == 1:
         imdb_id_str = "tt000000" + imdb_id_str
@@ -111,7 +111,7 @@ def add_imdb_id_prefix(tupl):
 
 # add the "tt0" prefix to imdb_id
 formatted_rdd = rdd_joined.map(add_imdb_id_prefix)
-print_rdd(formatted_rdd, "formatted_rdd")
+#print_rdd(formatted_rdd, "formatted_rdd")
 
 
 def save_to_db(list_of_tuples):
