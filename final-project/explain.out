@@ -1,0 +1,38 @@
+                                               QUERY PLAN                                               
+--------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=4587.14..4587.15 rows=1 width=8)
+   ->  Bitmap Heap Scan on title_basics  (cost=45.79..4583.91 rows=1291 width=0)
+         Recheck Cond: ((upper((primary_title)::text) = 'OBEDIENCE'::text) AND (start_year = 2016))
+         ->  Bitmap Index Scan on select_stmt_1_index  (cost=0.00..45.47 rows=1291 width=0)
+               Index Cond: ((upper((primary_title)::text) = 'OBEDIENCE'::text) AND (start_year = 2016))
+(5 rows)
+
+
+                                                                 QUERY PLAN                                                                 
+--------------------------------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on title_basics  (cost=16.96..1670.23 rows=442 width=10)
+   Recheck Cond: ((upper((primary_title)::text) = 'OBEDIENCE'::text) AND (start_year = 2016) AND ((title_type)::text <> 'tvEpisode'::text))
+   ->  Bitmap Index Scan on select_stmt_2_index  (cost=0.00..16.85 rows=442 width=0)
+         Index Cond: ((upper((primary_title)::text) = 'OBEDIENCE'::text) AND (start_year = 2016))
+(4 rows)
+
+
+                                                QUERY PLAN                                                
+----------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=28.96..9376.50 rows=78 width=10)
+   ->  Bitmap Heap Scan on title_basics tb  (cost=28.53..2856.68 rows=778 width=10)
+         Recheck Cond: ((upper((primary_title)::text) = 'OBJECTIFIED'::text) AND (start_year = 2009))
+         ->  Bitmap Index Scan on select_stmt_1_index  (cost=0.00..28.34 rows=778 width=0)
+               Index Cond: ((upper((primary_title)::text) = 'OBJECTIFIED'::text) AND (start_year = 2009))
+   ->  Index Only Scan using title_genres_pkey on title_genres tg  (cost=0.43..8.37 rows=1 width=10)
+         Index Cond: ((title_id = (tb.title_id)::text) AND (genre = 'Documentary'::text))
+(7 rows)
+
+
+                                            QUERY PLAN                                            
+--------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on title_basics  (cost=45.79..4583.91 rows=1291 width=10)
+   Recheck Cond: ((upper((primary_title)::text) = 'OBEDIENCE'::text) AND (start_year = 2016))
+   ->  Bitmap Index Scan on select_stmt_1_index  (cost=0.00..45.47 rows=1291 width=0)
+         Index Cond: ((upper((primary_title)::text) = 'OBEDIENCE'::text) AND (start_year = 2016))
+(4 rows)
