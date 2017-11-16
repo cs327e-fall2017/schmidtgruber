@@ -1,1 +1,6 @@
 select count(*) from Title_Financials;
+
+ count 
+-------
+ 14263
+(1 row)

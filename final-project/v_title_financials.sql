@@ -1,4 +1,6 @@
-create view v_title_financials as select title_id, budget, box_office, avg(budget), avg(box_office)
-from Title_Tags tt join Title_Basics tb on tt.title_id = tb.title_id
-where box_office < budget
-order by budget, box_office desc;
+create view v_title_financials as select start_year, avg(box_office - budget)
+from Title_Financials tf join title_basics tb on tf.title_id = tb.title_id
+where tb.start_year between 2000 and 2010
+and tf.box_office > tf.budget
+group by start_year
+order by start_year desc;
