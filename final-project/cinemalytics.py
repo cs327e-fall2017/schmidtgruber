@@ -74,33 +74,20 @@ rdd = lines.map(parse_songs)
 
 
 
-################## links file ##################################
+################## singer_songs file ##################################
 
 def parse_links_line(line):
     fields = line.split(",")
-    movie_id = int(fields[0])
-    imdb_id = int(fields[1])
-    return (movie_id, imdb_id)
+    person_id = str(fields[0])
+    song_id = str(fields[1])
+    return (person_id, song_id)
 
 
-# lookup imdb id
-links_lines = sc.textFile(links_file)
+# lookup
+singer_songs_lines = sc.textFile(singer_songs_file)
+
 #returns an rdd using the function given
-rdd_links = links_lines.map(parse_links_line)  # movie_id, imdb_id
-# print_rdd(rdd_links, "rdd_links")
-
-##### defines 'rdd_joined' as a result of a join operation on 'rdd_avgs'. the join operation returns a dataset of pairs of elements between 'rdd_avgs' and 'rdd_links' for each key.
-rdd_joined = rdd_avgs.join(rdd_links)
-
-
-# print_rdd(rdd_joined, "movielens_imdb_joined")
-
-# add imdb_id prefix ()
-##### defines 'rdd_ratings_by_imdb' as the result of a map transformation on 'rdd_joined'. the map transormation returns a new distributed dataset formed by passing each element of 'rdd_joined' through the function 'add_imdb_id_prefix'.
-rdd_ratings_by_imdb = rdd_joined.map(add_imdb_id_prefix)
-
-
-# print_rdd(rdd_ratings_by_imdb, "rdd_ratings_by_imdb")
+rdd_singer_songs = links_lines.map(parse_singer_songs_line)  # person_id, song_id
 
 def save_rating_to_db(list_of_tuples):
     conn = psycopg2.connect(database=rds_database, user=rds_user, password=rds_password, host=rds_host, port=rds_port)
