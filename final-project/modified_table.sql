@@ -1,0 +1,1 @@
+alter table Person_Basics add gender CHAR(1);
