@@ -207,10 +207,10 @@ def save_person_basics_to_db(list_of_person_basics):
         birth_year = int(birth_year)
 
 
-        insert_stmt = "insert into person_basics (person_id, primary_name, birth_year, death_year) values (%s, %s, %s, %s)"
+        insert_stmt = "insert into person_basics (person_id, primary_name, birth_year, death_year, gender) values (%s, %s, %s, %s, %s)"
 
         try:
-            cur.execute(insert_stmt, (person_id, primary_name, birth_year, ''))
+            cur.execute(insert_stmt, (person_id, primary_name, birth_year, '', gender))
         except Exception as e:
             print
             "Error in save_songs_to_db: ", e.message
