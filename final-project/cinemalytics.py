@@ -60,26 +60,23 @@ def print_rdd(rdd, logfile):
 
 def parse_songs(line):
     fields = line.split("\t")
-    song_id = fields[0]
+    song_id = fields[0].strip()
     song_title = fields[1].strip().upper().encode('utf-8')
-    song_duration = float(fields[3])
+    song_duration = float(fields[3].strip())
     return(song_id, song_title, song_duration)
 
 
 init()
 lines = sc.textFile(songs_file)
 #This returns an rdd using the function given
-rdd = lines.map(parse_songs)
-
-
-
+rdd_songs = lines.map(parse_songs)
 
 ################## singer_songs file ##################################
 
-def parse_links_line(line):
+def parse_singer_songs_line(line):
     fields = line.split(",")
-    person_id = str(fields[0])
-    song_id = str(fields[1])
+    person_id = fields[0].strip()
+    song_id = fields[1].strip()
     return (person_id, song_id)
 
 
@@ -87,30 +84,159 @@ def parse_links_line(line):
 singer_songs_lines = sc.textFile(singer_songs_file)
 
 #returns an rdd using the function given
-rdd_singer_songs = links_lines.map(parse_singer_songs_line)  # person_id, song_id
+rdd_singer_songs = singer_songs_lines.map(parse_singer_songs_line)  # person_id, song_id
 
-def save_rating_to_db(list_of_tuples):
+################## persons file ##################################
+
+def parse_persons_line(line):
+    fields = line.split("\t")
+    person_id = fields[0].strip()
+    primary_name = fields[1].strip().upper().encode('utf-8')
+    gender = fields[2].strip().upper()
+    dob = fields[3].strip()
+    return (person_id, primary_name, gender, dob)
+
+
+# lookup
+persons_lines = sc.textFile(persons_file)
+
+#returns an rdd using the function given
+rdd_persons = persons_lines.map(parse_persons_line)  # person_id, primary_name, gender, dob
+
+################## title_songs file ##################################
+
+def parse_title_songs_line(line):
+    fields = line.split("\t")
+    song_id = fields[0].strip()
+    movie_id = fields[1].strip
+    return (song_id, movie_id)
+
+
+# lookup
+title_songs_lines = sc.textFile(title_songs_file)
+
+#returns an rdd using the function given
+rdd_title_songs = title_songs_lines.map(parse_title_songs_line)  # song_id, movie_id
+
+################## titles file ##################################
+
+def parse_titles_line(line):
+    fields = line.split("\t")
+    movie_id = fields[0].strip()
+    imdb_id = fields[1].strip()
+    primary_title = fields[2].strip().upper().encode('utf-8')
+    original_title = fields[3].strip().upper().encode('utf-8')
+    genre = fields[4].strip().upper().encode('utf-8')
+    release_year = int(fields[5].strip())
+    return (movie_id, imdb_id, primary_title, original_title, genre, release_year)
+
+
+# lookup
+titles_lines = sc.textFile(titles_file)
+
+#returns an rdd using the function given
+rdd_titles = titles_lines.map(parse_titles_line)  # movie_id, imdb_id, primary_title, original_title, genre, release_year
+
+####################################
+
+###Songs table###
+#load from songs_file
+
+###Singer Songs table###
+#load from singer_songs_file
+
+###Person Basics Table###
+#want all person_ids from persons that are also in singer songs
+# so join singer_songs and persons on person_id
+#birth year should be extracted from dob in persons
+#person_basics has person_id, primary name, birth year, death year
+rdd_singer_songs_join_persons = rdd_singer_songs.join(rdd_persons)
+#person_id, song_id, primary_name, gender, dob
+
+###Title Songs table###
+#song_id from title_songs file
+#title_id from imdb_id in titles file
+#join title_songs and titles on movie_id and get the imdb_id(aka title_id) and song_id from that
+rdd_title_songs_join_titles = rdd_title_songs.join(rdd_titles)
+#song_id, movie_id, imdb_id, primary_title, original_title, genre, release_year
+
+
+
+def save_songs_to_db(list_of_songs):
     conn = psycopg2.connect(database=rds_database, user=rds_user, password=rds_password, host=rds_host, port=rds_port)
     conn.autocommit = True
     cur = conn.cursor()
 
-    for tupl in list_of_tuples:
-        imdb_id_str, avg_rating = tupl
+    for songs in list_of_songs:
+        song_id, song_title, song_duration = songs
 
-        # print "imdb_id_str = " + imdb_id_str
-        # print "avg_rating = " + str(avg_rating)
-        # update_stmt = "update title_ratings set movielens_rating = " + str(avg_rating) + " where title_id = '" + imdb_id_str + "'"
-        # print "update_stmt = " + update_stmt + "\n"
-        update_stmt = "update title_ratings set movielens_rating = %s where title_id = %s"
+        insert_stmt = "insert into Songs (song_id, song_title, song_duration) values (%s, %s, %s)"
 
         try:
-            cur.execute(update_stmt, (avg_rating, imdb_id_str))
+            cur.execute(insert_stmt, (song_id, song_title, song_duration))
         except Exception as e:
             print
-            "Error in save_rating_to_db: ", e.message
+            "Error in save_songs_to_db: ", e.message
+
+def save_singer_songs_to_db(list_of_singer_songs):
+    conn = psycopg2.connect(database=rds_database, user=rds_user, password=rds_password, host=rds_host,
+                            port=rds_port)
+    conn.autocommit = True
+    cur = conn.cursor()
+
+    for singer_songs in list_of_singer_songs:
+        person_id, song_id = singer_songs
+
+        insert_stmt = "insert into Singer_Songs (person_id, song_id) values (%s, %s)"
+
+        try:
+            cur.execute(insert_stmt, (person_id, song_id))
+        except Exception as e:
+            print
+            "Error in save_songs_to_db: ", e.message
+
+def save_person_basics_to_db(list_of_person_basics):
+    conn = psycopg2.connect(database=rds_database, user=rds_user, password=rds_password, host=rds_host,
+                            port=rds_port)
+    conn.autocommit = True
+    cur = conn.cursor()
+
+    for person_basics in list_of_person_basics:
+        person_id, song_id, primary_name, gender, dob = person_basics
+        birth_year = dob[0:4]
+        birth_year = int(birth_year)
+
+
+        insert_stmt = "insert into person_basics (person_id, primary_name, birth_year, death_year) values (%s, %s, %s, %s)"
+
+        try:
+            cur.execute(insert_stmt, (person_id, primary_name, birth_year, ''))
+        except Exception as e:
+            print
+            "Error in save_songs_to_db: ", e.message
+
+def save_title_songs_to_db(list_of_title_songs):
+    conn = psycopg2.connect(database=rds_database, user=rds_user, password=rds_password, host=rds_host,
+                            port=rds_port)
+    conn.autocommit = True
+    cur = conn.cursor()
+
+    for title_songs in list_of_title_songs:
+        song_id, movie_id, imdb_id, primary_title, original_title, genre, release_year = title_songs
+
+        insert_stmt = "insert into Title_Songs (title_id, song_id) values (%s, %s)"
+
+        try:
+            cur.execute(insert_stmt, (imdb_id, song_id))
+        except Exception as e:
+            print
+            "Error in save_songs_to_db: ", e.message
 
 ##### Applies the function 'save_rating_to_db' to each partition of the rdd 'rdd_ratings_by_imdb'
-rdd_ratings_by_imdb.foreachPartition(save_rating_to_db)
+rdd_songs.foreachPartition(save_songs_to_db)
+rdd_singer_songs.foreachPartition(save_singer_songs_to_db)
+rdd_singer_songs_join_persons.foreachPartition(save_person_basics_to_db)
+rdd_title_songs_join_titles.foreachPartition(save_title_songs_to_db)
 
 # free up resources
 sc.stop()
