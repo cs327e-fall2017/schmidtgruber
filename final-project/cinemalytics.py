@@ -69,38 +69,9 @@ def parse_songs(line):
 init()
 lines = sc.textFile(songs_file)
 #This returns an rdd using the function given
-rdd = lines.map(parse_songs)  # movie_id, rating
-# print_rdd(rdd, "movie_rating_pairs")
-
-#This maps each of the values to a key/value pair
-rdd_pair = rdd.mapValues(lambda rating: (rating, 1))  # movie_id, (rating, 1)
+rdd = lines.map(parse_songs)
 
 
-# print_rdd(rdd_pair, "movie_rating_one_pairs") # print rdd
-
-def add_ratings_by_movie(rating1, rating2):
-    # rating1 = (rating, occurrence)
-    # rating2 = (rating, occurrence)
-    rating_sum_total = round(float(rating1[0]) + float(rating2[0]), 2)
-    rating_occurrences = rating1[1] + rating2[1]
-    return (rating_sum_total, rating_occurrences)
-
-#This groups each key/pair value by the key
-rdd_totals = rdd_pair.reduceByKey(add_ratings_by_movie)  # movie_id (total rating, total occurrences)
-
-
-# print_rdd(rdd_totals, "movie_total_rating_occurrences") # print rdd
-
-def avg_ratings_by_movie(rating_total_occur):
-    rating_total = float(rating_total_occur[0])
-    rating_occur = rating_total_occur[1]
-    avg_rating = round((rating_total / rating_occur), 2)
-    return avg_rating
-
-#This maps the movie_id and average rating to a key/value pair
-rdd_avgs = rdd_totals.mapValues(avg_ratings_by_movie)  # movie_id, average rating
-# print_rdd(rdd_avgs, "movie_rating_averages") # print rdd
-rdd_avgs.cache()
 
 
 ################## links file ##################################
@@ -123,29 +94,6 @@ rdd_joined = rdd_avgs.join(rdd_links)
 
 
 # print_rdd(rdd_joined, "movielens_imdb_joined")
-
-def add_imdb_id_prefix(tupl):
-    movielens_id, atupl = tupl
-    avg_rating, imdb_id = atupl
-    imdb_id_str = str(imdb_id)
-
-    if len(imdb_id_str) == 1:
-        imdb_id_str = "tt000000" + imdb_id_str
-    elif len(imdb_id_str) == 2:
-        imdb_id_str = "tt00000" + imdb_id_str
-    elif len(imdb_id_str) == 3:
-        imdb_id_str = "tt0000" + imdb_id_str
-    elif len(imdb_id_str) == 4:
-        imdb_id_str = "tt000" + imdb_id_str
-    elif len(imdb_id_str) == 5:
-        imdb_id_str = "tt00" + imdb_id_str
-    elif len(imdb_id_str) == 6:
-        imdb_id_str = "tt0" + imdb_id_str
-    else:
-        imdb_id_str = "tt" + imdb_id_str
-
-    return (imdb_id_str, avg_rating)
-
 
 # add imdb_id prefix ()
 ##### defines 'rdd_ratings_by_imdb' as the result of a map transformation on 'rdd_joined'. the map transormation returns a new distributed dataset formed by passing each element of 'rdd_joined' through the function 'add_imdb_id_prefix'.
