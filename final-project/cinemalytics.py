@@ -62,7 +62,7 @@ def parse_songs(line):
     fields = line.split("\t")
     song_id = fields[0].strip()
     song_title = fields[1].strip().upper().encode('utf-8')
-    song_duration = float(fields[3].strip())
+    song_duration = float(fields[2].strip())
     return(song_id, song_title, song_duration)
 
 
