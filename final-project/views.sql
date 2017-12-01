@@ -10,5 +10,5 @@ order by count(ss.person_id) desc;
 
 create view v_title_songs as select ts.song_id, tb.title_type, count(*)
 from title_songs ts join title_basics tb on ts.title_id = tb.title_id
-group by tb.song_id
+group by ts.song_id, tb.title_type
 order by count(*) desc;
